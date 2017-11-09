@@ -9,7 +9,7 @@ The following example tests that **ConcurrentHashMap** is linearizable.
 
 ```java
 // This test uses 3 parallel threads and executes 1-3 operations in each
-@CTest(iterations = 300, actorsPerThread = {"1:3", "1:3", "1:3"})
+@StressCTest(iterations = 300, actorsPerThread = {"1:3", "1:3", "1:3"})
 // Create common parameter generators with "key" and "value" names.
 // These generators are applied by parameter name
 @Param(name = "key", gen = IntGen.class) // conf = "-10:10" by default
@@ -42,7 +42,7 @@ public class ConcurrentHashMapLinearizabilityTest {
     // Use JUnit to run test
     @Test
     public void test() {
-        LinChecker.check(this);
+        LinChecker.check(ConcurrentHashMapLinearizabilityTest.class);
     }
 }
 ```
