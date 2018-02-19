@@ -167,7 +167,7 @@ Possible linearizable executions:
 If you need help, you have a question, or you need further details on how to use **lin-check**, you can refer to the following resources:
 
 * [dxLab](https://code.devexperts.com/) research group at Devexperts
-* GitHub issues: [https://github.com/Devexperts/lin-check/issues]()
+* [GitHub issues](https://github.com/Devexperts/lin-check/issues)
 
 You can use the following e-mail to contact us directly:
 
