@@ -28,6 +28,7 @@ import com.devexperts.dxlab.lincheck.Result;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuiescentConsistentVerifier {
     private final LongExLinearizabilityVerifier verifier;
@@ -38,7 +39,7 @@ public class QuiescentConsistentVerifier {
 
     public void verifyResults(List<List<Result>> results) {
         /**
-         * TODO: формирование List<List<Result>> для каждого промежутка между периодами покоя
+         * формирование List<List<Result>> для каждого промежутка между периодами покоя
          * и вызов для каждой этой структуры LongExLinearizabilityVerifier.verifyResults
         */
         List<List<List<Result>>> possibleResults = generationResultsWithRestPeriods(results);
@@ -51,10 +52,25 @@ public class QuiescentConsistentVerifier {
         List<List<Result>> resultPiece = new ArrayList<>(results);
 
         for (int i = 0; i < resultPiece.size(); ++i) {
-            if (!resultPiece.isEmpty()) {
+            if (!resultPiece.get(i).isEmpty()) {
                 Pair period = creatingGap(resultPiece);
-                //TODO: добавить фильтрацию по периоду
-                //possibleResults.add(clearPeriod(period, resultPiece));
+
+                List<List<Result>> possibleResult = new ArrayList<>();
+
+                //очистка от просмотренных методов и обновление результирущего списка
+                for (int j = 0; j < resultPiece.size(); ++j) {
+                    possibleResult.add(resultPiece.get(j).stream()
+                            .filter(result -> result.getStartCallTime() >= period.getFirst()
+                                    && result.getEndCallTime() <= period.getSecond()).collect(Collectors.toList()));
+
+                    resultPiece.get(j)
+                            .removeIf(result ->
+                                    result.getStartCallTime() >= period.getFirst()
+                                            && result.getEndCallTime() <= period.getSecond());
+                }
+
+                possibleResults.add(possibleResult);
+                i = -1; //бесконечный цикл
             }
         }
 
