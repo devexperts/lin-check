@@ -22,11 +22,14 @@ package com.devexperts.dxlab.lincheck;
  * #L%
  */
 
+import com.devexperts.dxlab.lincheck.annotations.Param;
+import com.devexperts.dxlab.lincheck.annotations.QuiescentConsistent;
 import com.devexperts.dxlab.lincheck.execution.ExecutionGenerator;
 import com.devexperts.dxlab.lincheck.execution.RandomExecutionGenerator;
 import com.devexperts.dxlab.lincheck.stress.StressCTest;
 import com.devexperts.dxlab.lincheck.stress.StressCTestConfiguration;
 import com.devexperts.dxlab.lincheck.verifier.LinearizabilityVerifier;
+import com.devexperts.dxlab.lincheck.verifier.QuiescentConsistentVerifier;
 import com.devexperts.dxlab.lincheck.verifier.Verifier;
 
 import java.util.Arrays;
@@ -74,11 +77,23 @@ public abstract class CTestConfiguration {
     }
 
     static List<StressCTestConfiguration> createFromTestClass(Class<?> testClass) {
-        return Arrays.stream(testClass.getAnnotationsByType(StressCTest.class))
-            .map(stressTestAnn -> new StressCTestConfiguration(stressTestAnn.iterations(),
-                createTestThreadConfigurations(stressTestAnn.actorsPerThread()), stressTestAnn.generator(),
-                stressTestAnn.verifier(), stressTestAnn.invocationsPerIteration())
-            ).collect(Collectors.toList());
+        QuiescentConsistent quiescentConsistent = testClass.getAnnotation(QuiescentConsistent.class);
+        if (quiescentConsistent.active()) {
+            return Arrays.stream(testClass.getAnnotationsByType(StressCTest.class))
+                    .map(stressTestAnn ->
+                            new StressCTestConfiguration(stressTestAnn.iterations(),
+                                    createTestThreadConfigurations(stressTestAnn.actorsPerThread()), stressTestAnn.generator(),
+                                    QuiescentConsistentVerifier.class, stressTestAnn.invocationsPerIteration())
+                    ).collect(Collectors.toList());
+        } else {
+            return Arrays.stream(testClass.getAnnotationsByType(StressCTest.class))
+                    .map(stressTestAnn ->
+                            new StressCTestConfiguration(stressTestAnn.iterations(),
+                                    createTestThreadConfigurations(stressTestAnn.actorsPerThread()), stressTestAnn.generator(),
+                                    stressTestAnn.verifier(), stressTestAnn.invocationsPerIteration())
+                    ).collect(Collectors.toList());
+        }
+
     }
 
     private List<TestThreadConfiguration> defaultTestThreadConfigurations() {
