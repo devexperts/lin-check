@@ -35,6 +35,6 @@ public class QuiescentConsistentVerifier extends Verifier {
 
     @Override
     public void verifyResults(List<List<Result>> results) {
-
+        System.out.println("QuiescentConsistentVerifier start");
     }
 }

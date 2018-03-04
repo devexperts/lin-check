@@ -78,7 +78,6 @@ public abstract class CTestConfiguration {
 
     static List<StressCTestConfiguration> createFromTestClass(Class<?> testClass) {
         QuiescentConsistent quiescentConsistent = testClass.getAnnotation(QuiescentConsistent.class);
-        if (quiescentConsistent.active()) {
             return Arrays.stream(testClass.getAnnotationsByType(StressCTest.class))
                     .map(stressTestAnn ->
                             new StressCTestConfiguration(stressTestAnn.iterations(),
