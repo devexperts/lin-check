@@ -26,15 +26,149 @@ import com.devexperts.dxlab.lincheck.Actor;
 import com.devexperts.dxlab.lincheck.Result;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class QuiescentConsistentVerifier extends Verifier {
+public class QuiescentConsistentVerifier {
+    private final LongExLinearizabilityVerifier verifier;
     public QuiescentConsistentVerifier(List<List<Actor>> actorsPerThread, Object testInstance, Method resetMethod) {
-        super(actorsPerThread, testInstance, resetMethod);
+        //super(actorsPerThread, testInstance, resetMethod);
+        verifier = new LongExLinearizabilityVerifier(actorsPerThread, testInstance, resetMethod);
     }
 
-    @Override
     public void verifyResults(List<List<Result>> results) {
-        System.out.println("QuiescentConsistentVerifier start");
+        /**
+         * формирование List<List<Result>> для каждого промежутка между периодами покоя
+         * и вызов для каждой этой структуры LongExLinearizabilityVerifier.verifyResults
+        */
+        List<List<List<Result>>> possibleResults = generationResultsWithRestPeriods(results);
+        possibleResults.forEach(res -> verifier.verifyResults(res));
+    }
+
+    private List<List<List<Result>>> generationResultsWithRestPeriods(List<List<Result>> results) {
+        List<List<List<Result>>> possibleResults = new ArrayList<>();
+
+        List<List<Result>> resultPiece = new ArrayList<>(results);
+
+        for (int i = 0; i < resultPiece.size(); ++i) {
+            if (!resultPiece.get(i).isEmpty()) {
+                Pair period = creatingGap(resultPiece);
+
+                List<List<Result>> possibleResult = new ArrayList<>();
+
+                //очистка от просмотренных методов и обновление результирущего списка
+                for (int j = 0; j < resultPiece.size(); ++j) {
+                    possibleResult.add(resultPiece.get(j).stream()
+                            .filter(result -> result.getStartCallTime() >= period.getFirst()
+                                    && result.getEndCallTime() <= period.getSecond()).collect(Collectors.toList()));
+
+                    resultPiece.get(j)
+                            .removeIf(result ->
+                                    result.getStartCallTime() >= period.getFirst()
+                                            && result.getEndCallTime() <= period.getSecond());
+                }
+
+                possibleResults.add(possibleResult);
+                i = -1; //бесконечный цикл
+            }
+        }
+
+        return possibleResults;
+    }
+
+    /**
+     * создание промежутка между сосостояниями покоя
+     * @return List<Pair> список проверенных методов
+     */
+    private Pair creatingGap(List<List<Result>> results) {
+        long startMethodTime = 0;
+        for (int i = 0; i < results.size(); ++i) {
+            if (results.get(i).isEmpty()) {
+                continue;
+            }
+            else {
+                startMethodTime = results.get(i).get(0).getStartCallTime();
+                break;
+            }
+        }
+
+        int indexStream = 0;
+
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).isEmpty())
+                continue;
+            if (results.get(i).get(0).getStartCallTime() < startMethodTime)
+            {
+                startMethodTime = results.get(i).get(0).getStartCallTime();
+                indexStream = i;
+            }
+        }
+
+        boolean flag = false; // условие просмотра метода
+        long endMethodTime = results.get(indexStream).get(0).getEndCallTime();
+        //конечный результат старта (самое левое время НЕ периода покоя
+        long startMethodTimeResult = startMethodTime;
+
+        List<Pair> viewedMethods = new ArrayList<>(); //просмотренные результаты
+        viewedMethods.add(new Pair(indexStream, 0));
+
+        for (int i = 0; i < results.size(); ++i) {
+            if (i == indexStream) {
+                continue;
+            }
+
+            for (int j = 0; j < results.get(i).size(); ++j) {
+                for (int k = 0; k < viewedMethods.size(); ++k) {
+                    if (i == viewedMethods.get(k).getFirst() && j == viewedMethods.get(k).getSecond()) {
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (flag) {
+                    flag = false;
+                    continue;
+                }
+
+                if (results.get(i).get(j).getStartCallTime() < endMethodTime) {
+                    startMethodTime = results.get(i).get(j).getStartCallTime();
+                    endMethodTime = results.get(i).get(j).getEndCallTime();
+                    indexStream = i;
+
+                    viewedMethods.add(new Pair(indexStream, j));
+                    i = -1; //вечный цикл, пока не будет найден период покоя
+                }
+                break;
+            }
+        }
+
+        return new Pair(startMethodTimeResult, endMethodTime);
+    }
+}
+
+class Pair {
+    private long first;
+    private long second;
+
+    Pair(long first, long second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    public long getFirst() {
+        return first;
+    }
+
+    public long getSecond() {
+        return second;
+    }
+
+    public void setFirst(long first) {
+        this.first = first;
+    }
+
+    public void setSecond(long second) {
+        this.second = second;
     }
 }

@@ -70,15 +70,21 @@ public abstract class Verifier {
 
     protected Result executeActor(Object testInstance, Actor actor) {
         try {
+            //start call time
+            long startCallStart = System.currentTimeMillis();
             Object res = actor.method.invoke(testInstance, actor.arguments);
+            //end call time
+            long endCallStart = System.currentTimeMillis();
+
             if (actor.method.getReturnType() == void.class)
-                return Result.createVoidResult();
+                return Result.createVoidResult(startCallStart, endCallStart);
             else
-                return Result.createValueResult(res);
+                return Result.createValueResult(res, startCallStart, endCallStart);
         } catch (InvocationTargetException invE) {
             Class<? extends Throwable> eClass = invE.getCause().getClass();
             for (Class<? extends Throwable> ec : actor.handledExceptions) {
                 if (eClass.isAssignableFrom(ec))
+                    //TODO: вопрос по поводу передачи сюда параметров времени
                     return Result.createExceptionResult(eClass);
             }
             throw new IllegalStateException("Invalid exception as a result", invE);

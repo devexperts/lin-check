@@ -37,23 +37,44 @@ public class Result {
     private final Type type;
     private final Object value;
     private final Class<? extends Throwable> tClazz;
+    private final long startCallTime;
+    private final long endCallTime;
 
-    private Result(Type type, Object value, Class<? extends Throwable> tClazz) {
+    private Result(Type type, Object value, Class<? extends Throwable> tClazz,
+                   long startCallTime, long endCallTime) {
         this.type = type;
         this.value = value;
         this.tClazz = tClazz;
+        this.startCallTime = startCallTime;
+        this.endCallTime = endCallTime;
     }
 
     public static Result createVoidResult() {
-        return new Result(Type.VOID, null, null);
+        return new Result(Type.VOID, null, null, 0, 0);
+    }
+
+    public static Result createVoidResult(long startCallTime, long endCallTime) {
+        return new Result(Type.VOID, null, null, startCallTime, endCallTime);
     }
 
     public static Result createValueResult(Object value) {
-        return new Result(Type.VALUE, value, null);
+        return new Result(Type.VALUE, value, null, 0, 0);
+    }
+
+    public static Result createValueResult(Object value, long startCallTime, long endCallTime) {
+        return new Result(Type.VALUE, value, null, startCallTime, endCallTime);
     }
 
     public static Result createExceptionResult(Class<? extends Throwable> tClazz) {
-        return new Result(Type.EXCEPTION, null, tClazz);
+        return new Result(Type.EXCEPTION, null, tClazz, 0, 0);
+    }
+
+    public long getStartCallTime() {
+        return startCallTime;
+    }
+
+    public long getEndCallTime() {
+        return endCallTime;
     }
 
     @Override
