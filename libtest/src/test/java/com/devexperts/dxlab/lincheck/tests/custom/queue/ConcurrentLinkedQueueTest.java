@@ -1,4 +1,4 @@
-package leti._3303.faber;
+com.devexperts.dxlab.lincheck.tests.custom.queue;
 
 import com.devexperts.dxlab.lincheck.LinChecker;
 import com.devexperts.dxlab.lincheck.annotations.Operation;
