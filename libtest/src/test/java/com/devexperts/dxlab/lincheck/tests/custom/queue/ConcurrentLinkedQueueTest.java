@@ -1,4 +1,4 @@
-com.devexperts.dxlab.lincheck.tests.custom.queue;
+package com.devexperts.dxlab.lincheck.tests.custom.queue;
 
 import com.devexperts.dxlab.lincheck.LinChecker;
 import com.devexperts.dxlab.lincheck.annotations.Operation;
