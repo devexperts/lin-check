@@ -1,6 +1,9 @@
+
 # Lin-check
 
 [ ![Download](https://api.bintray.com/packages/devexperts/Maven/lin-check/images/download.svg) ](https://bintray.com/devexperts/Maven/lin-check/_latestVersion)
+
+**NOTE: Check [https://github.com/Kotlin/kotlinx-lincheck](https://github.com/Kotlin/kotlinx-lincheck) for the most recent version with extended Kotlin support.**
 
 **Lin-check** is a framework for testing concurrent data structure for correctness. In order to use the framework, operations to be executed concurrently should be specified with the necessary information for an execution scenario generation. With the help of this specification, **Lin-Check** generates different scenarios, executes them in concurrent environment several times and then checks that the execution results are correct (usually, linearizable, but different relaxed contracts can be used as well).
 
