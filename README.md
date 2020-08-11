@@ -10,7 +10,7 @@
 The artifacts are available in [Bintray](https://bintray.com/devexperts/Maven/lin-check) and JCenter. For Maven and Gradle use `com.devexperts.lincheck:lincheck:<version>` artifact in for your tests. Note that **2.xxx** versions are not compatible with **1.xxx**.
 
 ##### Given talks:
- *  [Lock-free algorithms testing](http://nkoval.info/talks/#lock_free_algorithms_testing) by Nikita Koval
+ *  [Lock-free algorithms testing](https://www.youtube.com/watch?v=_0_HOnTSS0E) by Nikita Koval
 
 
 
