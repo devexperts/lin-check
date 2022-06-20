@@ -40,7 +40,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <license.licenseName>lgpl_v3</license.licenseName>
         <lastCopyrightYear>2018</lastCopyrightYear>
-        <kotlin.version>1.2.70</kotlin.version>
+        <kotlin.version>1.6.0</kotlin.version>
         <dokka.version>0.9.17</dokka.version>
         <deploy.skip>false</deploy.skip>
     </properties>
