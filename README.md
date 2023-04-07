@@ -1,19 +1,11 @@
 
-# Lin-check
-
-[ ![Download](https://api.bintray.com/packages/devexperts/Maven/lin-check/images/download.svg) ](https://bintray.com/devexperts/Maven/lin-check/_latestVersion)
+# Lin-Check
 
 **NOTE: Check [https://github.com/Kotlin/kotlinx-lincheck](https://github.com/Kotlin/kotlinx-lincheck) for the most recent version with extended Kotlin support.**
 
-**Lin-check** is a framework for testing concurrent data structure for correctness. In order to use the framework, operations to be executed concurrently should be specified with the necessary information for an execution scenario generation. With the help of this specification, **Lin-Check** generates different scenarios, executes them in concurrent environment several times and then checks that the execution results are correct (usually, linearizable, but different relaxed contracts can be used as well).
+**LICENSE CHANGE:** Starting from version **3.0** the product is distributed under the **MPL 2.0** license.    
 
-The artifacts are available in [Bintray](https://bintray.com/devexperts/Maven/lin-check) and JCenter. For Maven and Gradle use `com.devexperts.lincheck:lincheck:<version>` artifact in for your tests. Note that **2.xxx** versions are not compatible with **1.xxx**.
-
-##### Given talks:
- *  [Lock-free algorithms testing](http://nkoval.info/talks/#lock_free_algorithms_testing) by Nikita Koval
-
-
-
+**Lin-Check** is a framework for testing concurrent data structures for correctness. In order to use the framework, operations to be executed concurrently should be specified with the necessary information for an execution scenario generation. With the help of this specification, **Lin-Check** generates different scenarios, executes them in concurrent environment several times and then checks that the execution results are correct (usually, linearizable, but different relaxed contracts can be used as well).
 
 Table of contents
 =================
@@ -36,9 +28,6 @@ Table of contents
    * [Configuration via options](#configuration-via-options)
    * [Sample](#sample)
    * [Contacts](#contacts)
-
-
-
 
 
 # Test structure
@@ -375,7 +364,7 @@ Execution results (post part):
 # Contacts
 If you need help, you have a question, or you need further details on how to use **Lin-Check**, you can refer to the following resources:
 
-* [dxLab](https://code.devexperts.com/) research group at Devexperts
+* [dxLab](https://opensource.devexperts.com/) research group at Devexperts
 * [GitHub issues](https://github.com/Devexperts/lin-check/issues)
 
 You can also use the following e-mail to contact us directly:
